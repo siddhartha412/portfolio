@@ -1,0 +1,336 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth; /* Smooth scrolling for navigation */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #1f1f1f;
+    color: #f5f5f5;
+    line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Ensure logo and nav-links are vertically aligned */
+    padding: 0.5rem 2rem; /* Reduced padding for smaller navbar */
+    background-color: #1f1f1f;
+    position: fixed; /* Keep navbar fixed at the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensures navbar stays on top of other content */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Optional shadow for better visibility */
+}
+
+.navbar .logo {
+    color: #ff6f00; /* Orange color */
+    font-weight: bold;
+    font-size: 1.25rem; /* Reduced font size */
+    text-decoration: none;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center; /* Align nav links with the logo */
+    padding-top: 0.8rem; /* Increased padding to move links down */
+}
+
+.nav-links a {
+    color: #f5f5f5;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    padding: 0.25rem 1rem; /* Reduced padding for smaller links */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-links a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #ff6f00; /* Orange color */
+    transition: width 0.3s ease-in-out;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.nav-links a:hover {
+    color: #f44336; /* Red color on hover */
+    transform: scale(1.1);
+}
+
+.burger {
+    display: none;
+    cursor: pointer;
+    z-index: 1001; /* Ensures the burger is on top of navbar */
+}
+
+.burger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 4px;
+    background: #f5f5f5;
+}
+
+
+/* Fullscreen Section */
+.hero, .about, .projects, .contact {
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 60px; /* Adds space to avoid overlap with fixed navbar */
+}
+
+/* Hero Section */
+.hero {
+    background: #1f1f1f; /* Dark gray for hero section */
+    color: white;
+}
+
+.hero img.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid white;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin: 1rem 0;
+}
+
+.hero .btn {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: #ff6f00; /* Orange color */
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.hero .btn:hover {
+    transform: scale(1.1);
+    background: #f44336; /* Red color */
+}
+
+/* Section Styling */
+.about {
+    background: #1f1f1f;
+    color: #f5f5f5;
+    padding: 3rem 2rem;
+}
+
+.about h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.about p {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.projects {
+    background: #333;
+    color: #f5f5f5;
+    padding: 3rem 2rem;
+}
+
+.projects h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Project Grid */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Default behavior for responsive layout */
+    gap: 1.5rem;
+}
+
+/* Ensure project cards display side by side on larger screens */
+@media (min-width: 768px) {
+    .project-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns for medium to large screens */
+    }
+}
+
+/* Ensure project cards display side by side on desktop screens */
+@media (min-width: 1024px) {
+    .project-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns for larger screens */
+    }
+}
+
+.project-card {
+    background: #444;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+}
+.project-card img.project-banner {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Ensure the image covers the card properly */
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 1rem;
+}
+
+
+.contact {
+    background: #121212;
+    color: #f5f5f5;
+    padding: 3rem 2rem;
+}
+
+.contact h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.contact-form input, .contact-form textarea {
+    background: #333;
+    color: #f5f5f5;
+    border: none;
+    border-radius: 5px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.contact-form button {
+    padding: 0.75rem 1.5rem;
+    background: #ff6f00; /* Orange color */
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.contact-form button:hover {
+    background: #f44336; /* Red color */
+}
+
+/* Footer */
+.footer {
+    background: #1f1f1f;
+    color: #f5f5f5;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Keyframe for Hero Image Pulse Effect */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Keyframe for Fade-In Effect */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px); /* Start from a slightly lower position */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Adding Fade-In animation to sections */
+.hero, .about, .projects, .contact {
+    opacity: 0; /* Initially hidden */
+    animation: fadeIn 1s forwards;
+}
+
+/* Scroll Animation for Sections */
+.fade-in-on-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive Styles for Burger Menu */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.5rem 2rem; /* Keep smaller padding for mobile */
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background-color: #333;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transition: right 0.3s ease;
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    .burger {
+        display: block;
+    }
+
+    .nav-links a {
+        font-size: 1.25rem;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem; /* Adjust font size for smaller screens */
+    }
+
+    .hero img.avatar {
+        width: 120px; /* Reduce avatar size on small screens */
+        height: 120px;
+    }
+
+    .about h2, .projects h2, .contact h2 {
+        font-size: 2rem;
+    }
+}
