@@ -71,11 +71,9 @@
         const titleElement = document.querySelector('title');
         
         function updateTitle() {
-            if (index < titleArray.length) {
-                titleElement.textContent = titleArray[index];
-                index++;
-                setTimeout(updateTitle, 300); // Change title every 300ms
-            }
+            titleElement.textContent = titleArray[index];
+            index = (index + 1) % titleArray.length; // Loop back to the start
+            setTimeout(updateTitle, 300); // Change title every 300ms
         }
 
         updateTitle(); // Start the title update process
