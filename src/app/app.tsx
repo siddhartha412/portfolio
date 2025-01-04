@@ -158,7 +158,7 @@ function App() {
             </AnimateWhenVisible>
             <AnimateWhenVisible animation="fade">
               <motion.a 
-                href="https://twitter.com/siddhartha412" 
+                href="https://twitter.com/siddharthab412" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-4xl md:text-5xl hover:text-blue-400 transition-colors duration-300"
