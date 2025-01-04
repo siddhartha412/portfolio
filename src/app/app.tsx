@@ -72,7 +72,7 @@ function App() {
           Founder of <span className="text-blue-500">Snipe</span> | Turning Bugs into Features
         </motion.p>
         <motion.img
-          src="/src/img/pfp.webp" // Path to your local image
+          src="./img/pfp.webp" // Path to your local image
           alt="Siddhartha412 Avatar"
           className="w-40 h-40 md:w-56 md:h-56 rounded-full mt-8 border-4 border-blue-500 shadow-lg"
           initial={{ scale: 0 }}
