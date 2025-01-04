@@ -1,118 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - Siddhartha412</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwind-scrollbar@1.0.0/dist/tailwind-scrollbar.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow: hidden; /* Disable scrolling during preloader */
-        }
-        main {
-            flex: 1;
-        }
-        /* Preloader Styling */
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: black;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .loader {
-            border: 4px solid transparent;
-            border-top: 4px solid #00FFEB;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Hide header initially */
-        #header {
-            opacity: 0;
-        }
-    </style>
-</head>
-<body class="bg-black text-white font-sans overflow-y-scroll scrollbar-thin scrollbar-thumb-white scrollbar-track-gray-800 scrollbar-thumb-rounded-lg">
-
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="loader"></div>
-    </div>
-
-    <!-- Main Content Wrapper -->
-    <main>
-        <!-- Header Section -->
-        <section id="header" class="h-screen flex flex-col justify-center items-center text-center snap-start bg-black px-4">
-            <h1 class="text-4xl sm:text-5xl font-bold text-white relative z-10" data-aos="fade-down" data-aos-duration="3000">
-                Hi, I'm 
-                <span class="bg-gradient-to-r from-[rgb(51,0,255)] via-[rgb(46,23,253)] to-[rgb(0,255,235)] bg-clip-text text-transparent">
-                    Siddhartha412
-                </span>
-            </h1>
-            <p class="mt-2 text-lg sm:text-xl text-gray-400" data-aos="fade-up" data-aos-duration="2500">
-                Founder of <span class="text-blue-500">Snipe</span> | Turning Bugs into Features
-            </p>
-            <img src="https://cdn.discordapp.com/avatars/1261577588669939755/fa8c1c829a11a3bee2bb22f55ab4139b.png?size=4096" 
-                 alt="Siddhartha412 Avatar" 
-                 class="w-32 sm:w-40 h-32 sm:h-40 rounded-full mt-6 border-2 border-blue-500"
-                 data-aos="zoom-in" data-aos-duration="2500">
-            <a href="#about" class="mt-8 text-blue-400 hover:text-blue-300 text-lg sm:text-xl" data-aos="fade-up" data-aos-duration="2500">Scroll Down ↓</a>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="h-screen flex flex-col justify-center items-center text-center px-6 snap-start bg-black">
-            <h2 class="text-3xl sm:text-4xl font-medium mb-4" data-aos="fade-right" data-aos-duration="1000">About Me</h2>
-            <p class="text-gray-400 text-base sm:text-lg max-w-xl leading-relaxed text-center" data-aos="fade-left" data-aos-duration="1000">
-                I am a <span class="text-blue-400 font-medium">full-stack developer</span> passionate about transforming challenges into opportunities. 
-                As the founder of <span class="text-blue-500 font-medium">Snipe</span>, I focus on crafting solutions that enhance 
-                development efficiency and usability.
-            </p>
-        </section>
-    </main>
-
-    <!-- Footer Section -->
-    <footer class="text-center py-4 bg-black">
-        <p class="text-gray-500 text-sm">&copy; 2025 <span class="text-blue-500">Siddhartha412</span>. All rights reserved.</p>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init(); // Initialize AOS Library
-
-        // Remove the preloader after the page has fully loaded
-        window.onload = function() {
-            setTimeout(function() {
-                document.getElementById('preloader').style.display = 'none'; // Hide preloader after 2 seconds
-                document.body.style.overflow = 'auto'; // Allow scrolling after loading
-                
-                // Trigger the header animation after 2.5 seconds
-                setTimeout(function() {
-                    document.getElementById('header').style.transition = 'opacity 2s'; // Set transition effect
-                    document.getElementById('header').style.opacity = '1'; // Make header visible after 2.5 seconds
-                }, 500); // Delay for 2.5 seconds (500ms after preloader removal)
-            }, 2000); // Delay for 2 seconds before hiding preloader
-        }
-    </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React + TypeScript + Tailwind @ Vite Template</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
