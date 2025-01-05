@@ -96,9 +96,7 @@ function App() {
           <h2 className="text-4xl md:text-5xl font-bold mb-8">About Me</h2>
           <AnimateWhenVisible animation="slideLeft">
             <p className="max-w-2xl text-lg md:text-xl text-gray-300 leading-relaxed">
-              I'm a passionate developer and entrepreneur, always looking for new challenges and opportunities to innovate. 
-              With a keen eye for detail and a love for clean, efficient code, I strive to create solutions that make a difference.
-              My journey in tech has been driven by curiosity and a desire to push boundaries.
+              I am a full-stack developer with a passion for turning challenges into opportunities. As the founder of <span class="text-blue-500">Snipe</span>, I am committed to transforming bugs into features that enhance development efficiency. My journey has been focused on innovation, problem-solving, and creating seamless solutions for developers.
             </p>
           </AnimateWhenVisible>
         </section>
