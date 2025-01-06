@@ -1,23 +1,23 @@
-import { useEffect } from 'react'
-import { motion, useAnimation } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import { FaGithub, FaTwitter, FaLinkedin, FaPython, FaJsSquare } from 'react-icons/fa'
-import { SiReact, SiCss3, SiHtml5, SiTailwindcss, SiBootstrap, SiExpress, SiElectron, SiMongodb } from 'react-icons/si'
+import { useEffect } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import { FaTwitter, FaGithub, FaPython, FaJsSquare } from 'react-icons/fa'; // Add FaJsSquare import
+import { SiReact, SiCss3, SiHtml5, SiTailwindcss, SiBootstrap, SiExpress, SiElectron, SiMongodb, SiNodedotjs } from 'react-icons/si';
 
 const AnimateWhenVisible = ({ children, animation }: { children: React.ReactNode, animation: 'fade' | 'slideLeft' | 'slideRight' }) => {
-  const controls = useAnimation()
+  const controls = useAnimation();
   const [ref, inView] = useInView({
     triggerOnce: false,
     threshold: 0.1,
-  })
+  });
 
   useEffect(() => {
     if (inView) {
-      controls.start('visible')
+      controls.start('visible');
     } else {
-      controls.start('hidden')
+      controls.start('hidden');
     }
-  }, [controls, inView])
+  }, [controls, inView]);
 
   const variants = {
     fade: {
@@ -32,7 +32,7 @@ const AnimateWhenVisible = ({ children, animation }: { children: React.ReactNode
       visible: { opacity: 1, x: 0 },
       hidden: { opacity: 0, x: 50 }
     }
-  }
+  };
 
   return (
     <motion.div
@@ -44,7 +44,7 @@ const AnimateWhenVisible = ({ children, animation }: { children: React.ReactNode
     >
       {children}
     </motion.div>
-  )
+  );
 }
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
       {/* Header Section */}
       <section className="h-screen flex flex-col justify-center items-center text-center px-4">
         <motion.h1 
-          className="text-5xl md:text-7xl font-bold"
+          className="text-4xl md:text-7xl font-bold"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -64,7 +64,7 @@ function App() {
           </span>
         </motion.h1>
         <motion.p 
-          className="mt-4 text-xl md:text-2xl text-gray-400"
+          className="mt-4 text-lg md:text-2xl text-gray-400"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
@@ -72,9 +72,9 @@ function App() {
          Turning Bugs into Features
         </motion.p>
         <motion.img
-          src="/img/pfp.webp" // Path to your local image
+          src="/img/pfp.webp"
           alt="Siddhartha412 Avatar"
-          className="w-40 h-40 md:w-56 md:h-56 rounded-full mt-8 border-4 border-blue-500 shadow-lg"
+          className="w-32 h-32 md:w-56 md:h-56 rounded-full mt-8 border-4 border-blue-500 shadow-lg"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 260, damping: 20, delay: 1 }}
@@ -84,7 +84,7 @@ function App() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 1 }}
         >
-          <a href="#about" className="mt-12 inline-block text-blue-400 hover:text-blue-300 transition-colors duration-300">
+          <a href="#about" className="mt-8 inline-block text-blue-400 hover:text-blue-300 transition-colors duration-300">
             Scroll Down ↓
           </a>
         </motion.div>
@@ -92,11 +92,11 @@ function App() {
 
       {/* About Section */}
       <AnimateWhenVisible animation="fade">
-        <section id="about" className="min-h-screen flex flex-col justify-center items-center text-center px-4 py-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">About Me</h2>
+        <section id="about" className="min-h-screen flex flex-col justify-center items-center text-center px-4 py-12">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">About Me</h2>
           <AnimateWhenVisible animation="slideLeft">
-            <p className="max-w-2xl text-lg md:text-xl text-gray-300 leading-relaxed">
-            I am a full-stack developer with a passion for turning challenges into opportunities. As the founder of <span class="text-blue-500">Snipe</span>, I am committed to transforming bugs into features that enhance development efficiency. My journey has been focused on innovation, problem-solving, and creating seamless solutions for developers.
+            <p className="max-w-xl text-base md:text-xl text-gray-300 leading-relaxed">
+              I am a full-stack developer with a passion for turning challenges into opportunities. As the founder of <span className="text-blue-500">Snipe</span>, I am committed to transforming bugs into features that enhance development efficiency. My journey has been focused on innovation, problem-solving, and creating seamless solutions for developers.
             </p>
           </AnimateWhenVisible>
         </section>
@@ -104,16 +104,16 @@ function App() {
 
       {/* Skills Section */}
       <AnimateWhenVisible animation="fade">
-        <section className="min-h-screen flex flex-col justify-center items-center text-center px-4 py-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12">Skills</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+        <section className="min-h-screen flex flex-col justify-center items-center text-center px-4 py-12">
+          <h2 className="text-3xl md:text-5xl font-bold mb-8">Skills</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {[
               { name: 'React', icon: <SiReact /> },
               { name: 'Python', icon: <FaPython /> },
               { name: 'CSS', icon: <SiCss3 /> },
               { name: 'HTML', icon: <SiHtml5 /> },
               { name: 'JavaScript', icon: <FaJsSquare /> },
-              { name: 'Node.js', icon: <FaGithub /> },
+              { name: 'Node.js', icon: <SiNodedotjs /> },
               { name: 'Electron JS', icon: <SiElectron /> },
               { name: 'Express JS', icon: <SiExpress /> },
               { name: 'MongoDB', icon: <SiMongodb /> },
@@ -122,13 +122,13 @@ function App() {
             ].map((skill, index) => (
               <AnimateWhenVisible key={skill.name} animation={index % 2 === 0 ? 'slideLeft' : 'slideRight'}>
                 <motion.div
-                  className="bg-white text-black rounded-lg p-6 shadow-lg"
+                  className="bg-white text-black rounded-lg p-4 md:p-6 shadow-lg"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="text-3xl text-black">{skill.icon}</div>
-                    <h3 className="text-xl md:text-2xl font-semibold text-black">{skill.name}</h3>
+                    <div className="text-3xl md:text-4xl">{skill.icon}</div>
+                    <h3 className="text-lg md:text-xl font-semibold">{skill.name}</h3>
                   </div>
                 </motion.div>
               </AnimateWhenVisible>
@@ -147,7 +147,7 @@ function App() {
                 href="https://github.com/siddhartha412" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-4xl md:text-5xl hover:text-blue-400 transition-colors duration-300"
+                className="text-4xl md:text-5xl hover:text-sky-400 transition-colors duration-300"
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -159,23 +159,11 @@ function App() {
                 href="https://twitter.com/siddhartha412" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-4xl md:text-5xl hover:text-blue-400 transition-colors duration-300"
+                className="text-4xl md:text-5xl hover:text-sky-400 transition-colors duration-300"
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <FaTwitter />
-              </motion.a>
-            </AnimateWhenVisible>
-            <AnimateWhenVisible animation="slideRight">
-              <motion.a 
-                href="https://linkedin.com/in/siddhartha412" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-4xl md:text-5xl hover:text-blue-400 transition-colors duration-300"
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <FaLinkedin />
               </motion.a>
             </AnimateWhenVisible>
           </div>
@@ -185,4 +173,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
