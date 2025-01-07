@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FaTwitter, FaGithub, FaPython, FaJsSquare } from 'react-icons/fa'; // Add FaJsSquare import
+import { FaTwitter, FaGithub, FaPython, FaJsSquare } from 'react-icons/fa';
 import { SiReact, SiCss3, SiHtml5, SiTailwindcss, SiBootstrap, SiExpress, SiElectron, SiMongodb, SiNodedotjs } from 'react-icons/si';
 
 const AnimateWhenVisible = ({ children, animation }: { children: React.ReactNode, animation: 'fade' | 'slideLeft' | 'slideRight' }) => {
@@ -45,7 +45,7 @@ const AnimateWhenVisible = ({ children, animation }: { children: React.ReactNode
       {children}
     </motion.div>
   );
-}
+};
 
 function App() {
   return (
@@ -69,7 +69,7 @@ function App() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
         >
-         Turning Bugs into Features
+          Turning Bugs into Features
         </motion.p>
         <motion.img
           src="/img/pfp.webp"
@@ -137,40 +137,43 @@ function App() {
         </section>
       </AnimateWhenVisible>
 
-      {/* Contact Section */}
-      <AnimateWhenVisible animation="fade">
-        <section id="contact" className="min-h-screen flex flex-col justify-center items-center text-center px-4 py-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">Get in Touch</h2>
-          <div className="flex space-x-8">
-            <AnimateWhenVisible animation="slideLeft">
-              <motion.a 
-                href="https://github.com/siddhartha412" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-4xl md:text-5xl hover:text-sky-400 transition-colors duration-300"
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <FaGithub />
-              </motion.a>
-            </AnimateWhenVisible>
-            <AnimateWhenVisible animation="fade">
-              <motion.a 
-                href="https://twitter.com/siddhartha412" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-4xl md:text-5xl hover:text-sky-400 transition-colors duration-300"
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <FaTwitter />
-              </motion.a>
-            </AnimateWhenVisible>
-          </div>
-        </section>
-      </AnimateWhenVisible>
+      {/* Get in Touch Section */}
+      <section id="contact" className="min-h-screen flex flex-col justify-center items-center text-center px-4 py-16">
+        <h2 className="text-4xl md:text-5xl font-bold mb-8">Get in Touch</h2>
+        <div className="flex space-x-8">
+          <AnimateWhenVisible animation="slideLeft">
+            <motion.a 
+              href="https://github.com/siddhartha412" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-4xl hover:text-sky-400 transition-colors duration-300"
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <FaGithub />
+            </motion.a>
+          </AnimateWhenVisible>
+          <AnimateWhenVisible animation="slideRight">
+            <motion.a 
+              href="https://twitter.com/siddhartha412" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-4xl hover:text-sky-400 transition-colors duration-300"
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <FaTwitter />
+            </motion.a>
+          </AnimateWhenVisible>
+        </div>
+      </section>
+
+      {/* Footer Section */}
+      <footer className="text-gray-400 py-6 text-center">
+        <p className="text-sm">&copy; {new Date().getFullYear()} Siddhartha412. All Rights Reserved.</p>
+      </footer>
     </div>
-  )
+  );
 }
 
 export default App;
