@@ -1,6 +1,4 @@
-# Allow all crawlers to access everything
 User-agent: *
-Disallow: 
-
-# Block specific sections if needed (example)
-# Disallow: /private-section/
+Disallow: /admin/
+Allow: /public/
+Sitemap: https://siddhartha412.vercel.app/sitemap.xml
