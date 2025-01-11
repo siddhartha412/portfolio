@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /private/
 Allow: /public/
-Sitemap: https://siddhartha412.vercel.app/sitemap.xml
+Sitemap: https://yourwebsite.com/sitemap.xml
