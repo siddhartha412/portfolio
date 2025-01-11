@@ -4,7 +4,14 @@
 
 Welcome to **Siddhartha412's Portfolio**! This project is a modern and responsive personal portfolio built using the latest web technologies, including React, TypeScript, Tailwind CSS, and Vite.
 
+
 ---
+   <br>   <br>   <br>
+   # Preview
+   [Tap here to see preview](https://siddhartha412.vercel.app/) 
+   <br>   <br>   <br> 
+
+   
 
 ## 🚀 Features
 
