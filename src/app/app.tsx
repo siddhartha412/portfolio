@@ -146,6 +146,7 @@ function App() {
               href="https://github.com/siddhartha412" 
               target="_blank" 
               rel="noopener noreferrer" 
+              aria-label="Siddhartha412 GitHub"
               className="text-4xl hover:text-sky-400 transition-colors duration-300"
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
@@ -158,6 +159,7 @@ function App() {
               href="https://twitter.com/siddhartha412" 
               target="_blank" 
               rel="noopener noreferrer" 
+              aria-label="Siddhartha412 Twitter"
               className="text-4xl hover:text-sky-400 transition-colors duration-300"
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
