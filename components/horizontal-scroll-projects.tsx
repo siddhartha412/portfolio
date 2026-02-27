@@ -1,7 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
-import gsap from 'gsap'
+import { useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import MagneticButton from '@/components/magnetic-button'
@@ -62,25 +61,7 @@ export function HorizontalScrollProjects() {
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
 
-  useEffect(() => {
-    const container = scrollContainerRef.current
-    if (!container) return
 
-    const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        return
-      }
-      e.preventDefault()
-      gsap.to(container, {
-        scrollLeft: container.scrollLeft + e.deltaX + e.deltaY,
-        duration: 0.6,
-        ease: 'power2.out',
-      })
-    }
-
-    container.addEventListener('wheel', handleWheel, { passive: false })
-    return () => container.removeEventListener('wheel', handleWheel)
-  }, [])
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsMouseDown(true)
