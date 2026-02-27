@@ -283,6 +283,16 @@
   display: none;
 }
 
+/* Hide scrollbar for specific elements */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Performance optimizations for smooth animations */
 .will-change-transform {
   will-change: transform;
