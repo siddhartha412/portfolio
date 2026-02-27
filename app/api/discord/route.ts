@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 
-export async function GET() {
+export async function GET(_request: NextRequest) {
   try {
     const response = await fetch("https://api.lanyard.rest/v1/users/1261577588669939755", {
       headers: {
