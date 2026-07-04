@@ -17,7 +17,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "siddhartha412 - noob stack dev who loves minimal",
+    default: "siddhartha412",
     template: "%s | siddhartha412",
   },
   description:
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://portfolio-wc.vercel.app",
-    title: "siddhartha412 - noob stack dev who loves minimal",
+    title: "siddhartha412",
     description:
       "siddhartha412 - a penguin but noob stack dev who loves minimal. Crafting clean, minimal digital experiences with React, Python, JavaScript, and Node.js.",
     siteName: "noob stack dev Portfolio",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "siddhartha412 - noob stack dev who loves minimal",
+    title: "siddhartha412",
     description:
       "siddhartha412 - a penguin but noob stack dev who loves minimal. Crafting clean, minimal digital experiences.",
     images: ["/avatar.png"],
@@ -123,9 +123,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://api.lanyard.rest" />
 
         {/* Favicon and app icons */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/avatar.png" type="image/png" sizes="any" />
+        <link rel="apple-touch-icon" href="/avatar.png" />
         <link rel="manifest" href="/manifest.json" />
 
         {/* Structured data for better SEO */}
