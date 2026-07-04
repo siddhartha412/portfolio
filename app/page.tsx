@@ -34,10 +34,11 @@ import { useDiscordStatus } from "@/hooks/use-discord-status"
 import Image from "next/image"
 import { useScroll, animated } from "@react-spring/web"
 import ScrollProgress from "@/components/scroll-progress"
+import PageLoader from "@/components/page-loader"
 
 export default function Portfolio() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [showLoader, setShowLoader] = useState(true)
   const [isHeroVisible, setIsHeroVisible] = useState(true)
   const heroRef = useRef<HTMLElement>(null)
   const { discordData } = useDiscordStatus()
@@ -47,11 +48,6 @@ export default function Portfolio() {
   const parallaxY1 = scrollYProgress.to([0, 1], [0, -50])
   const parallaxY2 = scrollYProgress.to([0, 1], [0, 75])
   const parallaxY3 = scrollYProgress.to([0, 1], [0, -25])
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 100)
-    return () => clearTimeout(timer)
-  }, [])
 
   // Lenis smooth scroll
   useEffect(() => {
@@ -188,9 +184,9 @@ export default function Portfolio() {
       <section ref={heroRef} id="home" className="min-h-screen flex flex-col justify-center px-4 sm:px-10 lg:px-20 relative overflow-hidden bg-background">
         {/* Intersecting Circles Background — positioned to the right like Mohit Kumar ref */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          <div className="absolute right-[-8%] top-[0%] w-[420px] h-[420px] sm:w-[580px] sm:h-[580px] md:w-[720px] md:h-[720px] rounded-full border border-foreground/20"></div>
-          <div className="absolute right-[8%] top-[28%] w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] md:w-[520px] md:h-[520px] rounded-full border border-foreground/20"></div>
-          <div className="absolute right-[24%] top-[55%] w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-foreground/60"></div>
+          <animated.div style={{ y: parallaxY1 }} className="absolute right-[-8%] top-[0%] w-[420px] h-[420px] sm:w-[580px] sm:h-[580px] md:w-[720px] md:h-[720px] rounded-full border border-foreground/20" />
+          <animated.div style={{ y: parallaxY2 }} className="absolute right-[8%] top-[28%] w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] md:w-[520px] md:h-[520px] rounded-full border border-foreground/20" />
+          <animated.div style={{ y: parallaxY3 }} className="absolute right-[24%] top-[55%] w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-foreground/60" />
         </div>
 
         <div className="w-full z-10 pt-24 max-w-7xl mx-auto">
@@ -670,6 +666,7 @@ export default function Portfolio() {
           </ScrollReveal>
         </div>
       </footer>
+      {showLoader && <PageLoader onComplete={() => setShowLoader(false)} />}
     </div>
   )
 }
