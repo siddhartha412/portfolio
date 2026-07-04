@@ -14,8 +14,8 @@ export async function GET() {
         {
           success: false,
           error: "Discord API unavailable",
+          discord_status: "offline",
         },
-        { status: 500 },
       )
     }
 
@@ -27,8 +27,8 @@ export async function GET() {
         {
           success: false,
           error: "Invalid response format",
+          discord_status: "offline",
         },
-        { status: 500 },
       )
     }
 
@@ -51,8 +51,8 @@ export async function GET() {
       {
         success: false,
         error: "Failed to fetch Discord status",
+        discord_status: "offline",
       },
-      { status: 500 },
     )
   }
 }

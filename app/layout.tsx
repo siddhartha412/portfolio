@@ -17,15 +17,15 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "siddhartha412 - The Minimal User | Developer Portfolio",
+    default: "siddhartha412 - noob stack dev who loves minimal",
     template: "%s | siddhartha412",
   },
   description:
-    "siddhartha412 (the minimal user) - Passionate developer crafting clean, minimal, and efficient digital experiences. Specializing in React, Python, JavaScript, Node.js, and modern web technologies with a focus on minimalist design and user experience.",
+    "siddhartha412 - a penguin but noob stack dev who loves minimal. Crafting clean, minimal digital experiences with React, Python, JavaScript, and Node.js.",
   keywords: [
     "siddhartha412",
-    "the minimal user",
-    "minimal developer",
+    "penguin",
+    "noob stack dev",
     "web developer",
     "frontend developer",
     "React developer",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     "clean code",
     "efficient development",
   ],
-  authors: [{ name: "siddhartha412 (the minimal user)", url: "https://github.com/siddhartha412" }],
+  authors: [{ name: "siddhartha412 (penguin but noob stack dev)", url: "https://github.com/siddhartha412" }],
   creator: "siddhartha412",
   publisher: "siddhartha412",
   formatDetection: {
@@ -58,26 +58,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://portfolio-wc.vercel.app",
-    title: "siddhartha412 - The Minimal User | Developer Portfolio",
+    title: "siddhartha412 - noob stack dev who loves minimal",
     description:
-      "siddhartha412 (the minimal user) - Passionate developer crafting clean, minimal, and efficient digital experiences. Specializing in React, Python, JavaScript, and modern web technologies.",
-    siteName: "siddhartha412 Portfolio",
+      "siddhartha412 - a penguin but noob stack dev who loves minimal. Crafting clean, minimal digital experiences with React, Python, JavaScript, and Node.js.",
+    siteName: "noob stack dev Portfolio",
     images: [
       {
         url: "/avatar.png",
         width: 1200,
         height: 630,
-        alt: "siddhartha412 - The Minimal User Developer Portfolio",
+        alt: "siddhartha412 - noob stack dev who loves minimal",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "siddhartha412 - The Minimal User | Developer Portfolio",
+    title: "siddhartha412 - noob stack dev who loves minimal",
     description:
-      "siddhartha412 (the minimal user) - Passionate developer crafting clean, minimal, and efficient digital experiences.",
+      "siddhartha412 - a penguin but noob stack dev who loves minimal. Crafting clean, minimal digital experiences.",
     images: ["/avatar.png"],
-    creator: "@the.minimaluser",
+    creator: "@penguin_noob_dev",
   },
   robots: {
     index: true,
@@ -103,7 +103,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${dmSans.variable} antialiased`}>
+    <html lang="en" className={`${inter.variable} ${dmSans.variable} antialiased dark`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#171717" media="(prefers-color-scheme: light)" />
@@ -113,7 +113,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="siddhartha412" />
-        <meta name="application-name" content="siddhartha412 Portfolio" />
+        <meta name="application-name" content="noob stack dev Portfolio" />
         <meta name="msapplication-TileColor" content="#171717" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
 
@@ -135,7 +135,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              name: "siddhartha412 (the minimal user)",
+              name: "siddhartha412 (penguin but noob stack dev)",
               url: "https://portfolio-wc.vercel.app",
               image: "https://portfolio-wc.vercel.app/avatar.png",
               sameAs: [
@@ -143,7 +143,7 @@ export default function RootLayout({
                 "https://www.instagram.com/the.minimaluser/",
                 "https://discord.com/users/1261577588669939755",
               ],
-              jobTitle: "Web Developer & Minimalist Designer",
+              jobTitle: "Noob Stack Dev & Penguin",
               worksFor: {
                 "@type": "Organization",
                 name: "Freelance",
@@ -160,7 +160,7 @@ export default function RootLayout({
                 "Clean Code",
               ],
               description:
-                "siddhartha412 (the minimal user) - Passionate developer crafting clean, minimal, and efficient digital experiences with focus on user-centered design.",
+                "siddhartha412 - a penguin but noob stack dev who loves minimal. Crafting clean, minimal digital experiences with focus on user-centered design.",
             }),
           }}
         />

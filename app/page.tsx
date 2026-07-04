@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -23,20 +23,24 @@ import {
   Instagram,
   BookOpen,
   Clock,
+  Star,
 } from "lucide-react"
 import SplitText from "@/components/split-text"
 import ScrollReveal from "@/components/scroll-reveal"
 import MagneticButton from "@/components/magnetic-button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { DiscordStatus } from "@/components/discord-status"
+import { useDiscordStatus } from "@/hooks/use-discord-status"
 import Image from "next/image"
-import { useScroll, animated } from "@react-spring/web" // Import useScroll and animated
+import { useScroll, animated } from "@react-spring/web"
 import ScrollProgress from "@/components/scroll-progress"
 
 export default function Portfolio() {
-  const [mounted, setMounted] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isHeroVisible, setIsHeroVisible] = useState(true)
+  const heroRef = useRef<HTMLElement>(null)
+  const { discordData } = useDiscordStatus()
 
   const { scrollYProgress } = useScroll()
 
@@ -44,907 +48,624 @@ export default function Portfolio() {
   const parallaxY2 = scrollYProgress.to([0, 1], [0, 75])
   const parallaxY3 = scrollYProgress.to([0, 1], [0, -25])
 
-  const navOpacity = scrollYProgress.to([0, 0.1], [0.8, 0.95])
-  const navBlur = scrollYProgress.to([0, 0.1], [8, 16])
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoaded(true)
-    }, 100)
+    const timer = setTimeout(() => setIsLoaded(true), 100)
     return () => clearTimeout(timer)
+  }, [])
+
+  // Lenis smooth scroll
+  useEffect(() => {
+    let lenis: any
+    ;(async () => {
+      const Lenis = (await import("lenis")).default
+      lenis = new Lenis({ duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) })
+      const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf) }
+      requestAnimationFrame(raf)
+    })()
+    return () => lenis?.destroy()
+  }, [])
+
+  // Watch hero visibility for navbar logo animation
+  useEffect(() => {
+    const hero = heroRef.current
+    if (!hero) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsHeroVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    observer.observe(hero)
+    return () => observer.disconnect()
   }, [])
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <ScrollProgress />
 
-      <animated.nav
-        className="fixed top-0 w-full border-b border-border/50 z-40"
-        style={{
-          backgroundColor: isLoaded
-            ? navOpacity.to((opacity) => `rgba(var(--background), ${opacity})`)
-            : "rgba(var(--background), 0.9)",
-          backdropFilter: isLoaded
-            ? navBlur.to((blur) => `blur(${blur}px) saturate(150%)`)
-            : "blur(12px) saturate(150%)",
-        }}
+      <nav className="fixed top-0 w-full z-50 p-6 sm:p-10 glass-strong text-foreground">
+        <div className="flex justify-between items-center max-w-7xl mx-auto">
+          {/* Logo hidden during hero, slides in after */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className={`font-bold text-xl sm:text-2xl tracking-tight transition-all duration-500 ease-out ${
+              isHeroVisible ? "opacity-0 -translate-y-4 pointer-events-none" : "opacity-100 translate-y-0"
+            }`}
+          >
+            siddhartha412
+          </button>
+          <div className="flex items-center space-x-4 ml-auto">
+            <ThemeToggle />
+            <button onClick={() => setIsMobileMenuOpen(true)} className="p-2">
+              <Menu className="h-6 w-6 sm:h-8 sm:w-8" />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Full Screen Overlay Menu */}
+      <div
+        className={`fixed inset-0 z-[60] bg-background/80 backdrop-blur-2xl text-foreground transition-transform duration-500 ease-in-out ${isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
+          }`}
       >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+        <div className="flex h-full flex-col md:flex-row">
+          {/* Left Side - Links */}
+          <div className="w-full md:w-1/2 p-10 flex flex-col justify-center items-start md:items-center relative">
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="font-bold text-lg tracking-tight text-foreground hover:opacity-75 transition-all duration-300 hover:scale-105"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-10 right-10 md:hidden p-2"
             >
-              siddhartha412
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
             </button>
 
-            <div className="hidden md:flex items-center space-x-8">
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
-              >
-                <span className="relative">
-                  Home
-                  <svg
-                    className="absolute -bottom-1 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0,2.1 Q12,0.8 25,2.3 Q38,3.1 50,1.9 Q62,0.7 75,2.4 Q88,3.2 100,1.8"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      className="text-primary"
-                      strokeLinecap="round"
-                      strokeDasharray="100"
-                      strokeDashoffset="100"
-                    />
-                  </svg>
-                  <style jsx>{`
-                    .group:hover path {
-                      animation: drawIn 0.6s ease-out forwards;
-                    }
-                    .group:not(:hover) path {
-                      animation: eraseOut 0.4s ease-in forwards;
-                    }
-                    @keyframes drawIn {
-                      to {
-                        stroke-dashoffset: 0;
-                      }
-                    }
-                    @keyframes eraseOut {
-                      from {
-                        stroke-dashoffset: 0;
-                      }
-                      to {
-                        stroke-dashoffset: -100;
-                      }
-                    }
-                  `}</style>
-                </span>
-              </button>
-              <button
-                onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
-              >
-                <span className="relative">
-                  About
-                  <svg
-                    className="absolute -bottom-1 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0,1.8 Q15,3.2 28,1.7 Q42,0.9 55,2.6 Q68,3.3 82,1.5 Q95,0.6 100,2.2"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      className="text-primary"
-                      strokeLinecap="round"
-                      strokeDasharray="100"
-                      strokeDashoffset="100"
-                    />
-                  </svg>
-                  <style jsx>{`
-                    .group:hover path {
-                      animation: drawIn 0.6s ease-out forwards;
-                    }
-                    .group:not(:hover) path {
-                      animation: eraseOut 0.4s ease-in forwards;
-                    }
-                    @keyframes drawIn {
-                      to {
-                        stroke-dashoffset: 0;
-                      }
-                    }
-                    @keyframes eraseOut {
-                      from {
-                        stroke-dashoffset: 0;
-                      }
-                      to {
-                        stroke-dashoffset: -100;
-                      }
-                    }
-                  `}</style>
-                </span>
-              </button>
-              <button
-                onClick={() => document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" })}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
-              >
-                <span className="relative">
-                  Skills
-                  <svg
-                    className="absolute -bottom-1 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0,2.3 Q18,0.7 32,2.8 Q47,3.4 61,1.6 Q76,0.8 89,2.5 Q96,3.1 100,1.9"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      className="text-primary"
-                      strokeLinecap="round"
-                      strokeDasharray="100"
-                      strokeDashoffset="100"
-                    />
-                  </svg>
-                  <style jsx>{`
-                    .group:hover path {
-                      animation: drawIn 0.6s ease-out forwards;
-                    }
-                    .group:not(:hover) path {
-                      animation: eraseOut 0.4s ease-in forwards;
-                    }
-                    @keyframes drawIn {
-                      to {
-                        stroke-dashoffset: 0;
-                      }
-                    }
-                    @keyframes eraseOut {
-                      from {
-                        stroke-dashoffset: 0;
-                      }
-                      to {
-                        stroke-dashoffset: -100;
-                      }
-                    }
-                  `}</style>
-                </span>
-              </button>
-              <button
-                onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
-              >
-                <span className="relative">
-                  Projects
-                  <svg
-                    className="absolute -bottom-1 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0,1.9 Q14,3.1 29,1.4 Q44,0.6 58,2.7 Q73,3.5 87,1.8 Q94,0.9 100,2.4"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      className="text-primary"
-                      strokeLinecap="round"
-                      strokeDasharray="100"
-                      strokeDashoffset="100"
-                    />
-                  </svg>
-                  <style jsx>{`
-                    .group:hover path {
-                      animation: drawIn 0.6s ease-out forwards;
-                    }
-                    .group:not(:hover) path {
-                      animation: eraseOut 0.4s ease-in forwards;
-                    }
-                    @keyframes drawIn {
-                      to {
-                        stroke-dashoffset: 0;
-                      }
-                    }
-                    @keyframes eraseOut {
-                      from {
-                        stroke-dashoffset: 0;
-                      }
-                      to {
-                        stroke-dashoffset: -100;
-                      }
-                    }
-                  `}</style>
-                </span>
-              </button>
-              <button
-                onClick={() => document.getElementById("blogs")?.scrollIntoView({ behavior: "smooth" })}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
-              >
-                <span className="relative">
-                  Blogs
-                  <svg
-                    className="absolute -bottom-1 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0,2.4 Q16,0.9 31,2.6 Q46,3.2 60,1.7 Q75,0.5 90,2.3 Q97,3.0 100,1.6"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      className="text-primary"
-                      strokeLinecap="round"
-                      strokeDasharray="100"
-                      strokeDashoffset="100"
-                    />
-                  </svg>
-                  <style jsx>{`
-                    .group:hover path {
-                      animation: drawIn 0.6s ease-out forwards;
-                    }
-                    .group:not(:hover) path {
-                      animation: eraseOut 0.4s ease-in forwards;
-                    }
-                    @keyframes drawIn {
-                      to {
-                        stroke-dashoffset: 0;
-                      }
-                    }
-                    @keyframes eraseOut {
-                      from {
-                        stroke-dashoffset: 0;
-                      }
-                      to {
-                        stroke-dashoffset: -100;
-                      }
-                    }
-                  `}</style>
-                </span>
-              </button>
-              <button
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 relative group"
-              >
-                <span className="relative">
-                  Contact
-                  <svg
-                    className="absolute -bottom-1 left-0 w-full h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    viewBox="0 0 100 4"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0,1.7 Q13,2.9 27,1.3 Q41,0.8 56,2.5 Q71,3.4 85,1.9 Q92,0.7 100,2.1"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      className="text-primary"
-                      strokeLinecap="round"
-                      strokeDasharray="100"
-                      strokeDashoffset="100"
-                    />
-                  </svg>
-                  <style jsx>{`
-                    .group:hover path {
-                      animation: drawIn 0.6s ease-out forwards;
-                    }
-                    .group:not(:hover) path {
-                      animation: eraseOut 0.4s ease-in forwards;
-                    }
-                    @keyframes drawIn {
-                      to {
-                        stroke-dashoffset: 0;
-                      }
-                    }
-                    @keyframes eraseOut {
-                      from {
-                        stroke-dashoffset: 0;
-                      }
-                      to {
-                        stroke-dashoffset: -100;
-                      }
-                    }
-                  `}</style>
-                </span>
-              </button>
-              <ThemeToggle />
-            </div>
-
-            <div className="md:hidden flex items-center space-x-2">
-              <ThemeToggle />
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 hover:bg-muted/50 rounded-lg transition-colors duration-200 backdrop-blur-sm"
-              >
-                <Menu className="h-5 w-5" />
-              </button>
+            <div className="space-y-8 text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight">
+              {[
+                { name: "Home", action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+                { name: "Projects", action: () => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" }) },
+                { name: "About Me", action: () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" }) },
+              ].map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    item.action()
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="block hover:text-muted-foreground transition-colors text-left"
+                >
+                  {item.name}
+                </button>
+              ))}
             </div>
           </div>
 
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-border/50 bg-background/80 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-background/70">
-              <div className="px-2 pt-2 pb-3 space-y-1">
+          {/* Right Side - Socials Grid */}
+          <div className="w-full md:w-1/2 h-full bg-[#0a0a0a] text-white hidden md:grid grid-cols-2 grid-rows-2 relative border-l border-white/10">
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-10 right-10 z-10 p-2 hover:bg-white/10 rounded-full transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+            </button>
+
+            <a href="https://github.com/siddhartha412" target="_blank" rel="noopener noreferrer" className="border-r border-b border-white/10 flex flex-col items-start justify-center p-12 hover:bg-white/5 transition-colors group">
+              <Github className="h-8 w-8 mb-4 group-hover:scale-110 transition-transform" />
+              <span className="text-xl">Github</span>
+            </a>
+            <a href="mailto:contact@siddhartha412.com" className="border-b border-white/10 flex flex-col items-start justify-center p-12 hover:bg-white/5 transition-colors group">
+              <Mail className="h-8 w-8 mb-4 group-hover:scale-110 transition-transform" />
+              <span className="text-xl">Email</span>
+            </a>
+            <a href="https://linkedin.com/in/siddhartha412" target="_blank" rel="noopener noreferrer" className="border-r border-white/10 flex flex-col items-start justify-center p-12 hover:bg-white/5 transition-colors group">
+              <svg className="h-8 w-8 mb-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg>
+              <span className="text-xl">LinkedIn</span>
+            </a>
+            <a href="https://discord.com/users/1261577588669939755" target="_blank" rel="noopener noreferrer" className="flex flex-col items-start justify-center p-12 hover:bg-white/5 transition-colors group">
+              <MessageCircle className="h-8 w-8 mb-4 group-hover:scale-110 transition-transform" />
+              <span className="text-xl">Discord</span>
+            </a>
+          </div>
+
+          {/* Mobile Socials */}
+          <div className="md:hidden grid grid-cols-2 grid-rows-2 h-full bg-[#0a0a0a] text-white">
+            <a href="https://github.com/siddhartha412" target="_blank" rel="noopener noreferrer" className="border-r border-b border-white/10 flex flex-col items-center justify-center p-6">
+              <Github className="h-6 w-6 mb-2" />
+              <span>Github</span>
+            </a>
+            <a href="mailto:contact@siddhartha412.com" className="border-b border-white/10 flex flex-col items-center justify-center p-6">
+              <Mail className="h-6 w-6 mb-2" />
+              <span>Email</span>
+            </a>
+            <a href="https://linkedin.com/in/siddhartha412" target="_blank" rel="noopener noreferrer" className="border-r border-white/10 flex flex-col items-center justify-center p-6">
+              <svg className="h-6 w-6 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg>
+              <span>LinkedIn</span>
+            </a>
+            <a href="https://discord.com/users/1261577588669939755" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-6">
+              <MessageCircle className="h-6 w-6 mb-2" />
+              <span>Discord</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <section ref={heroRef} id="home" className="min-h-screen flex flex-col justify-center px-4 sm:px-10 lg:px-20 relative overflow-hidden bg-background">
+        {/* Intersecting Circles Background — positioned to the right like Mohit Kumar ref */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <div className="absolute right-[-8%] top-[0%] w-[420px] h-[420px] sm:w-[580px] sm:h-[580px] md:w-[720px] md:h-[720px] rounded-full border border-foreground/20"></div>
+          <div className="absolute right-[8%] top-[28%] w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] md:w-[520px] md:h-[520px] rounded-full border border-foreground/20"></div>
+          <div className="absolute right-[24%] top-[55%] w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-foreground/60"></div>
+        </div>
+
+        <div className="w-full z-10 pt-24 max-w-7xl mx-auto">
+          {/* Available badge */}
+          <div className="mb-8">
+            <span className="inline-flex items-center gap-2 border border-foreground/20 text-foreground/60 text-xs px-4 py-1.5 rounded-full tracking-widest uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              Available for Projects
+            </span>
+          </div>
+
+          {/* Content row: big text left, pfp right */}
+          <div className="flex items-end justify-between gap-8">
+            <div className="flex-1 min-w-0">
+              {/* One-line title — fits on one line using fluid font size */}
+              <h1 className="font-black leading-none tracking-tighter uppercase font-sans mb-8"
+                style={{ fontSize: "clamp(2.5rem, 10.5vw, 9rem)" }}>
+                SIDDHARTHA 412
+              </h1>
+
+              <div className="border-t border-foreground/20 w-full max-w-xl pt-6 mb-8 relative">
+                <p className="text-xl sm:text-2xl font-medium tracking-wide">
+                  Full Stack Developer
+                </p>
+                {/* Decorative lines */}
+                <div className="hidden md:flex flex-col gap-1.5 absolute right-0 top-6 items-end opacity-20">
+                  <div className="h-[1px] w-12 bg-foreground"></div>
+                  <div className="h-[1px] w-20 bg-foreground"></div>
+                  <div className="h-[1px] w-16 bg-foreground"></div>
+                  <div className="h-[1px] w-28 bg-foreground"></div>
+                  <div className="h-[1px] w-10 bg-foreground"></div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <button
+                  onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                  className="border border-foreground text-foreground px-6 py-3 text-sm font-semibold tracking-widest uppercase hover:bg-foreground hover:text-background transition-colors duration-300 rounded-lg"
+                >
+                  Get in Touch
+                </button>
+                <button
+                  onClick={() => document.getElementById("blogs")?.scrollIntoView({ behavior: "smooth" })}
+                  className="border border-foreground/25 text-foreground px-6 py-3 text-sm font-semibold tracking-widest uppercase hover:border-foreground transition-colors duration-300 rounded-lg"
+                >
+                  Blog
+                </button>
+              </div>
+            </div>
+
+            {/* Profile Picture — circular, right side, desktop only */}
+            <div className="hidden lg:block flex-shrink-0 mb-4 relative">
+              <div className="relative w-52 h-52 xl:w-60 xl:h-60 overflow-hidden rounded-full border border-foreground/15 grayscale hover:grayscale-0 transition-all duration-700 ease-out">
+                <Image
+                  src="/avatar.png"
+                  alt="siddhartha412"
+                  fill
+                  className="object-cover object-top scale-110"
+                  priority
+                />
+              </div>
+              {/* Status dot — Discord-style */}
+              {discordData && (
+                <div className={`absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-[2.5px] border-background ${
+                  discordData.discord_status === "online" ? "bg-green-500" :
+                  discordData.discord_status === "idle" ? "bg-yellow-500" :
+                  discordData.discord_status === "dnd" ? "bg-red-500" : "bg-gray-500"
+                }`} />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce z-10">
+          <svg className="w-5 h-8 border border-foreground/50 rounded-full p-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <rect x="5" y="2" width="14" height="20" rx="7" />
+            <path d="M12 6v4" strokeLinecap="round" />
+          </svg>
+          <span className="text-[9px] uppercase tracking-widest mt-2 text-foreground/70">Scroll</span>
+        </div>
+      </section>
+
+      <section id="about" className="min-h-screen flex items-center px-4 sm:px-10 lg:px-20 py-32">
+        <div className="max-w-7xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40 mb-6">About Me</p>
+            <div className="border-t border-foreground/15 pt-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              {/* Left — big statement */}
+              <div>
+                <h2 className="font-black tracking-tighter leading-[0.9] mb-8"
+                  style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)" }}>
+                  a penguin??
+                </h2>
+                <p className="text-base sm:text-lg text-foreground/60 leading-relaxed max-w-md">
+                  just a penguin who likes to code. nothing fancy — minimal, clean, and built with love.<br />
+                  i break stuff, fix it, and learn along the way. noob stack dev but i make it work.
+                </p>
+              </div>
+              {/* Right — stat blocks */}
+              <div className="grid grid-cols-2 gap-3">
                 {[
-                  { name: "Home", action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
-                  {
-                    name: "About",
-                    action: () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" }),
-                  },
-                  {
-                    name: "Skills",
-                    action: () => document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" }),
-                  },
-                  {
-                    name: "Projects",
-                    action: () => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" }),
-                  },
-                  {
-                    name: "Blogs",
-                    action: () => document.getElementById("blogs")?.scrollIntoView({ behavior: "smooth" }),
-                  },
-                  {
-                    name: "Contact",
-                    action: () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }),
-                  },
-                ].map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => {
-                      item.action()
-                      setIsMobileMenuOpen(false)
-                    }}
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted/30 rounded-md transition-colors duration-200 backdrop-blur-sm"
-                  >
-                    {item.name}
-                  </button>
+                  { label: "Years Coding", value: "4+" },
+                  { label: "Projects Built", value: "10+" },
+                  { label: "Speciality", value: "Random Stuffs" },
+                  { label: "Philosophy", value: "Minimal First" },
+                ].map((stat, i) => (
+                  <div key={i} className="glass-card rounded-2xl p-8 backdrop-blur-md">
+                    <p className="text-3xl sm:text-4xl font-black tracking-tight mb-2">{stat.value}</p>
+                    <p className="text-xs uppercase tracking-widest text-foreground/40">{stat.label}</p>
+                  </div>
                 ))}
               </div>
             </div>
-          )}
-        </div>
-      </animated.nav>
-
-      <section id="home" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">
-        <div className="max-w-6xl mx-auto text-center">
-          <ScrollReveal delay={isLoaded ? 100 : 0} direction="scale">
-            <div className="mb-6 sm:mb-8">
-              <Image
-                src="/avatar.png"
-                alt="siddhartha412 avatar"
-                width={120}
-                height={120}
-                className="rounded-full mx-auto mb-6 sm:mb-8 border-2 border-primary w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32"
-                priority
-              />
-            </div>
-          </ScrollReveal>
-
-          <div className="mb-6 sm:mb-8 group cursor-default">
-            <SplitText
-              text="siddhartha412"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold group-hover:text-primary transition-colors duration-500"
-              splitType="chars"
-              staggerDelay={0.03}
-              delay={0}
-            />
-          </div>
-
-          <div className="mb-4 sm:mb-6">
-            <SplitText
-              text="the minimal user"
-              className="text-lg sm:text-xl md:text-2xl text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-default"
-              splitType="words"
-              staggerDelay={0.03}
-              delay={300}
-            />
-          </div>
-
-          <ScrollReveal delay={isLoaded ? 600 : 200} direction="up">
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-12 hover:text-foreground transition-colors duration-300 cursor-default px-4">
-              Crafting clean, efficient, and user-focused digital experiences with attention to detail and simplicity.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal
-            delay={isLoaded ? 800 : 300}
-            direction="up"
-            className="flex justify-center space-x-2 sm:space-x-4 flex-wrap gap-2 sm:gap-4"
-          >
-            <MagneticButton
-              onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-              size="lg"
-              className="text-sm sm:text-base"
-            >
-              View Projects
-            </MagneticButton>
-            <MagneticButton
-              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-              variant="outline"
-              size="lg"
-              className="text-sm sm:text-base"
-            >
-              Get in Touch
-            </MagneticButton>
-          </ScrollReveal>
-        </div>
-
-        {isLoaded && (
-          <>
-            <animated.div
-              className="absolute top-1/2 left-10 w-2 h-2 bg-primary rounded-full float-animation opacity-20 hover:opacity-60 hover:scale-150 transition-all duration-300 cursor-pointer"
-              style={{ transform: parallaxY1.to((y) => `translateY(${y}px)`) }}
-            />
-            <animated.div
-              className="absolute top-1/3 right-10 w-3 h-3 border border-primary rounded-full float-animation opacity-30 hover:opacity-80 hover:scale-125 hover:bg-primary transition-all duration-300 cursor-pointer"
-              style={{ animationDelay: "2s", transform: parallaxY2.to((y) => `translateY(${y}px)`) }}
-            />
-            <animated.div
-              className="absolute bottom-1/4 left-1/4 w-1 h-1 bg-primary rounded-full float-animation opacity-40 hover:opacity-90 hover:scale-200 transition-all duration-300 cursor-pointer"
-              style={{ animationDelay: "4s", transform: parallaxY3.to((y) => `translateY(${y}px)`) }}
-            />
-          </>
-        )}
-      </section>
-
-      <section id="about" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-muted/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <ScrollReveal direction="rotate" className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-8">About Me</h2>
-          </ScrollReveal>
-
-          <ScrollReveal delay={200} direction="fade">
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed hover:text-foreground transition-colors duration-300 cursor-default max-w-3xl mx-auto">
-              I'm a passionate developer who believes in the power of simplicity and clean design. My approach focuses
-              on creating intuitive user experiences while maintaining efficient, maintainable code. When I'm not
-              coding, you'll find me exploring new technologies, contributing to open-source projects, or sharing
-              knowledge with the developer community through my blog.
-            </p>
           </ScrollReveal>
         </div>
       </section>
 
-      <section id="skills" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <ScrollReveal direction="fade">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 hover:text-primary transition-colors duration-300 cursor-default">
-              Skills
-            </h2>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-            {[
-              {
-                name: "React",
-                icon: <Layers className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://react.dev/",
-                proficiency: 88,
-              },
-              {
-                name: "Python",
-                icon: <Worm className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://www.python.org/",
-                proficiency: 85,
-              },
-              {
-                name: "CSS",
-                icon: <Palette className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://developer.mozilla.org/en-US/docs/Web/CSS",
-                proficiency: 90,
-              },
-              {
-                name: "HTML",
-                icon: <Code className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://developer.mozilla.org/en-US/docs/Web/HTML",
-                proficiency: 92,
-              },
-              {
-                name: "JavaScript",
-                icon: <Code className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-                proficiency: 90,
-              },
-              {
-                name: "Node.js",
-                icon: <Server className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://nodejs.org/",
-                proficiency: 80,
-              },
-              {
-                name: "Electron",
-                icon: <Box className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://www.electronjs.org/",
-                proficiency: 75,
-              },
-              {
-                name: "Express.js",
-                icon: <Server className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://expressjs.com/",
-                proficiency: 78,
-              },
-              {
-                name: "MongoDB",
-                icon: <Database className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://www.mongodb.com/",
-                proficiency: 72,
-              },
-              {
-                name: "Tailwind CSS",
-                icon: <Palette className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://tailwindcss.com/",
-                proficiency: 92,
-              },
-              {
-                name: "Bootstrap",
-                icon: <Palette className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://getbootstrap.com/",
-                proficiency: 85,
-              },
-              {
-                name: "Git",
-                icon: <GitBranch className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://git-scm.com/",
-                proficiency: 85,
-              },
-              {
-                name: "Figma",
-                icon: <Figma className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://www.figma.com/",
-                proficiency: 78,
-              },
-              {
-                name: "Flask",
-                icon: <Server className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://flask.palletsprojects.com/",
-                proficiency: 70,
-              },
-              {
-                name: "VS Code",
-                icon: <Code className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://code.visualstudio.com/",
-                proficiency: 95,
-              },
-              {
-                name: "Linux",
-                icon: <Terminal className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://www.linux.org/",
-                proficiency: 88,
-              },
-              {
-                name: "Arch Linux",
-                icon: <Terminal className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://archlinux.org/",
-                proficiency: 82,
-              },
-              {
-                name: "Ubuntu",
-                icon: <Terminal className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://ubuntu.com/",
-                proficiency: 85,
-              },
-              {
-                name: "Debian",
-                icon: <Terminal className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://www.debian.org/",
-                proficiency: 80,
-              },
-              {
-                name: "Fedora",
-                icon: <Terminal className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://getfedora.org/",
-                proficiency: 75,
-              },
-              {
-                name: "GitHub Desktop",
-                icon: <Github className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://desktop.github.com/",
-                proficiency: 88,
-              },
-              {
-                name: "Vite",
-                icon: <Zap className="h-4 w-4 sm:h-5 sm:w-5" />,
-                url: "https://vitejs.dev/",
-                proficiency: 85,
-              },
-            ].map((skill, index) => (
-              <ScrollReveal key={skill.name} delay={index * 50} direction="bounce">
-                <a
-                  href={skill.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 lg:p-5 border border-border/50 rounded-lg hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:scale-105 hover:-translate-y-1 transition-all duration-300 group cursor-pointer block overflow-hidden bg-card/50 backdrop-blur-sm backdrop-saturate-150 supports-[backdrop-filter]:bg-card/30"
-                >
-                  <div className="absolute inset-0 bg-primary/5 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out backdrop-blur-sm" />
-                  <div
-                    className="absolute bottom-0 left-0 h-1 bg-primary transform translate-y-full group-hover:translate-y-0 transition-all duration-700 ease-out"
-                    style={{ width: `${skill.proficiency}%` }}
-                  />
-
-                  <div className="relative z-10 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300">
-                    {skill.icon}
-                  </div>
-                  <div className="relative z-10 flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs sm:text-sm md:text-xs lg:text-sm xl:text-base font-medium group-hover:text-primary transition-colors duration-300">
-                        {skill.name}
-                      </span>
-                      <span className="text-xs font-bold text-primary md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-x-2 md:group-hover:translate-x-0 ml-2 flex-shrink-0">
+      <section id="skills" className="min-h-screen flex items-center px-4 sm:px-10 lg:px-20 py-32">
+        <div className="max-w-7xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40 mb-6">Skills</p>
+            <div className="border-t border-foreground/15 pt-12">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-0">
+                {[
+                  { name: "React", icon: <Layers className="h-5 w-5" />, url: "https://react.dev/", proficiency: 88 },
+                  { name: "Python", icon: <Worm className="h-5 w-5" />, url: "https://www.python.org/", proficiency: 85 },
+                  { name: "CSS", icon: <Palette className="h-5 w-5" />, url: "https://developer.mozilla.org/en-US/docs/Web/CSS", proficiency: 90 },
+                  { name: "HTML", icon: <Code className="h-5 w-5" />, url: "https://developer.mozilla.org/en-US/docs/Web/HTML", proficiency: 92 },
+                  { name: "JavaScript", icon: <Code className="h-5 w-5" />, url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", proficiency: 90 },
+                  { name: "Node.js", icon: <Server className="h-5 w-5" />, url: "https://nodejs.org/", proficiency: 80 },
+                  { name: "Electron", icon: <Box className="h-5 w-5" />, url: "https://www.electronjs.org/", proficiency: 75 },
+                  { name: "Express.js", icon: <Server className="h-5 w-5" />, url: "https://expressjs.com/", proficiency: 78 },
+                  { name: "MongoDB", icon: <Database className="h-5 w-5" />, url: "https://www.mongodb.com/", proficiency: 72 },
+                  { name: "Tailwind CSS", icon: <Palette className="h-5 w-5" />, url: "https://tailwindcss.com/", proficiency: 92 },
+                  { name: "Bootstrap", icon: <Palette className="h-5 w-5" />, url: "https://getbootstrap.com/", proficiency: 85 },
+                  { name: "Git", icon: <GitBranch className="h-5 w-5" />, url: "https://git-scm.com/", proficiency: 85 },
+                  { name: "Figma", icon: <Figma className="h-5 w-5" />, url: "https://www.figma.com/", proficiency: 78 },
+                  { name: "Flask", icon: <Server className="h-5 w-5" />, url: "https://flask.palletsprojects.com/", proficiency: 70 },
+                  { name: "VS Code", icon: <Code className="h-5 w-5" />, url: "https://code.visualstudio.com/", proficiency: 95 },
+                  { name: "Linux", icon: <Terminal className="h-5 w-5" />, url: "https://www.linux.org/", proficiency: 88 },
+                  { name: "Arch Linux", icon: <Terminal className="h-5 w-5" />, url: "https://archlinux.org/", proficiency: 82 },
+                  { name: "Ubuntu", icon: <Terminal className="h-5 w-5" />, url: "https://ubuntu.com/", proficiency: 85 },
+                  { name: "Debian", icon: <Terminal className="h-5 w-5" />, url: "https://www.debian.org/", proficiency: 80 },
+                  { name: "Fedora", icon: <Terminal className="h-5 w-5" />, url: "https://getfedora.org/", proficiency: 75 },
+                  { name: "GitHub Desktop", icon: <Github className="h-5 w-5" />, url: "https://desktop.github.com/", proficiency: 88 },
+                  { name: "Vite", icon: <Zap className="h-5 w-5" />, url: "https://vitejs.dev/", proficiency: 85 },
+                ].map((skill, index) => (
+                  <ScrollReveal key={skill.name} delay={index * 30} direction="fade">
+                    <a
+                      href={skill.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="relative flex flex-col items-start p-5 border border-foreground/10 hover:bg-foreground/5 transition-colors duration-200 group overflow-hidden rounded-xl"
+                    >
+                      {/* proficiency bar — animated on hover */}
+                      <div
+                        className="absolute bottom-0 left-0 h-[2px] bg-foreground/40 group-hover:bg-foreground origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out rounded-full"
+                        style={{ width: `${skill.proficiency}%` }}
+                      />
+                      <div className="text-foreground/50 group-hover:text-foreground transition-colors duration-200 mb-3">
+                        {skill.icon}
+                      </div>
+                      <span className="text-xs font-medium uppercase tracking-wider leading-tight">{skill.name}</span>
+                      <span className="text-[10px] text-foreground/30 mt-1 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 ease-out">
                         {skill.proficiency}%
                       </span>
-                    </div>
-                  </div>
-                  <ExternalLink className="relative z-10 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 flex-shrink-0" />
-                </a>
-              </ScrollReveal>
-            ))}
-          </div>
+                    </a>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      <section id="projects" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <ScrollReveal direction="down">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 hover:text-primary transition-colors duration-300 cursor-default">
-              Projects
-            </h2>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                title: "DiscordAI",
-                description:
-                  "Just a ai with refining the response of gemini ai and with Discord.py integration for enhanced AI interactions.",
-                tech: ["Python", "Discord.py", "Gemini API", "AI"],
-                github: "https://github.com/siddhartha412/DiscordAI",
-                demo: "#",
-                icon: <Zap className="h-6 w-6" />,
-              },
-              {
-                title: "Manga App",
-                description:
-                  "A app which helps to download all your favourite mangas which is made with mangaanelo and electron.",
-                tech: ["JavaScript", "Electron", "Mangaanelo API"],
-                github: "https://github.com/siddhartha412/manga-app",
-                demo: "#",
-                icon: <Code className="h-6 w-6" />,
-              },
-              {
-                title: "Couplescraze",
-                description:
-                  "A TypeScript project focused on creating engaging couple-focused applications and features.",
-                tech: ["TypeScript", "Web Development"],
-                github: "https://github.com/siddhartha412/Couplescraze",
-                demo: "#",
-                icon: <Palette className="h-6 w-6" />,
-              },
-              {
-                title: "Chess Game",
-                description:
-                  "A JavaScript-based chess game implementation with interactive gameplay and clean interface.",
-                tech: ["JavaScript", "Game Development", "Chess Logic"],
-                github: "https://github.com/siddhartha412/chess",
-                demo: "#",
-                icon: <Box className="h-6 w-6" />,
-              },
-            ].map((project, index) => (
-              <ScrollReveal key={index} delay={index * 100} direction="scale">
-                <Card className="hover:shadow-2xl hover:shadow-primary/10 hover:scale-105 hover:-translate-y-2 transition-all duration-500 group border-border/50 hover:border-primary/50 h-full cursor-pointer bg-card/50 backdrop-blur-sm backdrop-saturate-150 supports-[backdrop-filter]:bg-card/30">
-                  <CardHeader>
-                    <div className="flex items-center space-x-3 mb-2">
-                      <div className="p-2 bg-muted/50 backdrop-blur-sm rounded-lg group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
-                        {project.icon}
+      <section id="projects" className="min-h-screen flex items-center px-4 sm:px-10 lg:px-20 py-32">
+        <div className="max-w-7xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40 mb-6">Projects</p>
+            <div className="border-t border-foreground/15 pt-12">
+              <div className="divide-y divide-foreground/10">
+                {[
+                  {
+                    title: "Waveyy",
+                    description: "Sounds like a moving wave",
+                    tech: ["JavaScript", "Audio", "Visualization"],
+                    github: "https://github.com/siddhartha412/Waveyy",
+                    demo: "#",
+                    year: "2026",
+                    stars: 1,
+                  },
+                  {
+                    title: "peb",
+                    description: "A package manager powered by pacman, yay, and flatpak",
+                    tech: ["TypeScript", "CLI", "Package Manager"],
+                    github: "https://github.com/siddhartha412/peb",
+                    demo: "#",
+                    year: "2026",
+                    stars: 0,
+                  },
+                  {
+                    title: "kiooo",
+                    description: "An AI that looks like an AGI",
+                    tech: ["AI", "Python", "AGI"],
+                    github: "https://github.com/siddhartha412/kiooo",
+                    demo: "#",
+                    year: "2026",
+                    stars: 0,
+                  },
+                  {
+                    title: "Chord",
+                    description: "A Discord bot made with TypeScript, Node.js, Discord.js, and JioSaavn API",
+                    tech: ["Python", "Discord.js", "Node.js", "JioSaavn API"],
+                    github: "https://github.com/siddhartha412/Chord",
+                    demo: "#",
+                    year: "2026",
+                    stars: 0,
+                  },
+                  {
+                    title: "manga-app",
+                    description: "An app to download all your favourite mangas, made with Manganato and Electron",
+                    tech: ["JavaScript", "Electron", "Manganato API"],
+                    github: "https://github.com/siddhartha412/manga-app",
+                    demo: "#",
+                    year: "2025",
+                    stars: 3,
+                  },
+                  {
+                    title: "DiscordAI",
+                    description: "An AI with refined Gemini responses, integrated with Discord.py",
+                    tech: ["Python", "Discord.py", "Gemini API", "AI"],
+                    github: "https://github.com/siddhartha412/DiscordAI",
+                    demo: "#",
+                    year: "2025",
+                    stars: 1,
+                  },
+                  {
+                    title: "S-412",
+                    description: "A personal AI",
+                    tech: ["HTML", "JavaScript", "AI"],
+                    github: "https://github.com/siddhartha412/S-412",
+                    demo: "#",
+                    year: "2025",
+                    stars: 1,
+                  },
+                  {
+                    title: "Giveing",
+                    description: "It gives you the answers to the questions...",
+                    tech: ["Python", "Q&A", "CLI"],
+                    github: "https://github.com/siddhartha412/Giveing",
+                    demo: "#",
+                    year: "2025",
+                    stars: 0,
+                  },
+                  {
+                    title: "Discord-DM-Bot",
+                    description: "A Discord DM bot to talk to or prank your blocked friends using your bot",
+                    tech: ["Python", "Discord.py", "Automation"],
+                    github: "https://github.com/siddhartha412/Discord-DM-Bot",
+                    demo: "#",
+                    year: "2024",
+                    stars: 1,
+                  },
+                  {
+                    title: "ChatGPT-App-with-Electronjs",
+                    description: "ChatGPT desktop app",
+                    tech: ["JavaScript", "Electron", "ChatGPT", "Desktop"],
+                    github: "https://github.com/siddhartha412/ChatGPT-App-with-Electronjs",
+                    demo: "#",
+                    year: "2024",
+                    stars: 0,
+                  },
+                  {
+                    title: "DiscordMentions",
+                    description: "Top 10 users who annoy you with mentions on Discord",
+                    tech: ["JavaScript", "Discord.js", "SelfBot"],
+                    github: "https://github.com/siddhartha412/DiscordMentions",
+                    demo: "#",
+                    year: "2024",
+                    stars: 0,
+                  },
+                ].map((project, index) => (
+                  <ScrollReveal key={index} delay={index * 80} direction="up">
+                    <div className="group flex flex-col sm:flex-row sm:items-center justify-between py-8 px-6 gap-4 hover:bg-foreground/[0.02] transition-colors rounded-2xl -mx-2">
+                      <div className="flex items-start gap-6 flex-1">
+                        <span className="text-xs text-foreground/30 tracking-widest pt-1 hidden sm:flex flex-col items-center w-12 flex-shrink-0 gap-1">
+                          <span>{project.year}</span>
+                          {project.stars > 0 && (
+                            <span className="flex items-center gap-1 text-xs font-semibold text-foreground/50">
+                              <Star className="h-3.5 w-3.5 fill-yellow-500/60 text-yellow-500/60" />
+                              {project.stars}
+                            </span>
+                          )}
+                        </span>
+                        <div>
+                          <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 group-hover:text-foreground/70 transition-colors">{project.title}</h3>
+                          <p className="text-sm text-foreground/50 max-w-md leading-relaxed">{project.description}</p>
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            {project.tech.map(t => (
+                              <span key={t} className="text-[10px] uppercase tracking-widest text-foreground/40 border border-foreground/15 px-3 py-1 rounded-md">{t}</span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <CardTitle className="text-lg group-hover:text-primary transition-colors duration-300">
-                        {project.title}
-                      </CardTitle>
-                    </div>
-                    <CardDescription className="leading-relaxed text-sm group-hover:text-foreground transition-colors duration-300">
-                      {project.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.tech.map((tech) => (
-                        <Badge
-                          key={tech}
-                          variant="outline"
-                          className="text-xs group-hover:border-primary group-hover:text-primary transition-colors duration-300 bg-background/50 backdrop-blur-sm"
-                        >
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="flex space-x-3">
-                      <MagneticButton size="sm" variant="outline" className="flex-1">
+                      <div className="flex gap-3 flex-shrink-0">
                         <a
                           href={project.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center w-full"
+                          className="border border-foreground/20 px-4 py-2 text-xs font-semibold tracking-widest uppercase hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 flex items-center gap-2 rounded-lg"
                         >
-                          <Github className="h-4 w-4 mr-2" />
+                          <Github className="h-3.5 w-3.5" />
                           Code
                         </a>
-                      </MagneticButton>
-                      {project.demo !== "#" && (
-                        <MagneticButton size="sm" className="flex-1">
+                        {project.demo !== "#" && (
                           <a
                             href={project.demo}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center w-full"
+                            className="border border-foreground px-4 py-2 text-xs font-semibold tracking-widest uppercase hover:bg-foreground hover:text-background transition-all duration-300 flex items-center gap-2 rounded-lg"
                           >
-                            <ExternalLink className="h-4 w-4 mr-2" />
+                            <ExternalLink className="h-3.5 w-3.5" />
                             Demo
                           </a>
-                        </MagneticButton>
-                      )}
+                        )}
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="blogs" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-48">
-        <div className="max-w-7xl mx-auto">
-          <ScrollReveal direction="fade">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 hover:text-primary transition-colors duration-300 cursor-default">
-              Latest Blogs
-            </h2>
-          </ScrollReveal>
-
-          <div className="flex justify-center">
-            <ScrollReveal direction="up">
-              <Card className="hover:shadow-2xl hover:shadow-primary/10 hover:scale-105 hover:-translate-y-2 transition-all duration-500 group border-border/50 hover:border-primary/50 h-full cursor-pointer max-w-md bg-card/50 backdrop-blur-sm backdrop-saturate-150 supports-[backdrop-filter]:bg-card/30">
-                <CardHeader>
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="p-2 bg-muted/50 backdrop-blur-sm rounded-lg group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
-                      <BookOpen className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg group-hover:text-primary transition-colors duration-300">
-                      The uprising of me
-                    </CardTitle>
-                  </div>
-                  <CardDescription className="leading-relaxed text-sm group-hover:text-foreground transition-colors duration-300">
-                    A funny journey of my journey, that how I learn this stuff and all...
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge
-                      variant="outline"
-                      className="text-xs group-hover:border-primary group-hover:text-primary transition-colors duration-300 bg-background/50 backdrop-blur-sm"
-                    >
-                      Breaking stuffs
-                    </Badge>
-                    <Badge
-                      variant="outline"
-                      className="text-xs group-hover:border-primary group-hover:text-primary transition-colors duration-300 bg-background/50 backdrop-blur-sm"
-                    >
-                      Journey
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between items-center text-xs text-muted-foreground mb-4">
-                    <span>Aug 12 2025</span>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      <span>3 mins read</span>
-                    </div>
-                  </div>
-                  <MagneticButton size="sm" className="w-full">
-                    <a href="/blog/the-uprising-of-me" className="flex items-center justify-center w-full">
-                      <BookOpen className="h-4 w-4 mr-2" />
-                      Read Full Post
-                    </a>
-                  </MagneticButton>
-                </CardContent>
-              </Card>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-muted/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <ScrollReveal direction="fade">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 hover:text-primary transition-colors duration-300 cursor-default">
-              Get in Touch
-            </h2>
-          </ScrollReveal>
-
-          <ScrollReveal delay={200} direction="up">
-            <p className="text-base sm:text-lg text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed hover:text-foreground transition-colors duration-300 cursor-default">
-              I'm always interested in new opportunities and collaborations. Feel free to reach out if you'd like to
-              work together.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={400} direction="up">
-            <div className="flex justify-center space-x-3 sm:space-x-6 flex-wrap gap-3 sm:gap-4">
-              <MagneticButton size="lg" className="text-sm sm:text-base">
-                <a href="mailto:siddharthab412@gmail.com" className="flex items-center">
-                  <Mail className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                  Email
-                </a>
-              </MagneticButton>
-              <MagneticButton variant="outline" size="lg" className="text-sm sm:text-base">
-                <a
-                  href="https://github.com/siddhartha412"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center"
-                >
-                  <Github className="h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform duration-300" />
-                  <span>GitHub</span>
-                </a>
-              </MagneticButton>
+                  </ScrollReveal>
+                ))}
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      <footer className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 border-t border-border/50 bg-muted/30 backdrop-blur-sm backdrop-saturate-150 supports-[backdrop-filter]:bg-muted/20">
-        <div className="max-w-6xl mx-auto">
+      <section id="blogs" className="min-h-screen flex items-center px-4 sm:px-10 lg:px-20 py-32">
+        <div className="max-w-7xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40 mb-6">Latest Blogs</p>
+            <div className="border-t border-foreground/15 pt-12">
+              <div className="divide-y divide-foreground/10">
+                {[
+                  {
+                    title: "The uprising of me",
+                    description: "A funny journey of my journey, that how I learn this stuff and all...",
+                    tags: ["Breaking stuffs", "Journey"],
+                    date: "Aug 12 2025",
+                    readTime: "3 mins read",
+                    href: "/blog/the-uprising-of-me",
+                  },
+                ].map((post, i) => (
+                  <ScrollReveal key={i} delay={i * 80} direction="up">
+                    <div className="group flex flex-col sm:flex-row sm:items-center justify-between py-8 px-6 gap-4 hover:bg-foreground/[0.02] transition-colors rounded-2xl -mx-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-4 mb-3">
+                          <span className="text-xs text-foreground/30 tracking-widest">{post.date}</span>
+                          <span className="text-xs text-foreground/30 tracking-widest flex items-center gap-1">
+                            <Clock className="h-3 w-3" />{post.readTime}
+                          </span>
+                        </div>
+                        <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 group-hover:text-foreground/70 transition-colors">{post.title}</h3>
+                        <p className="text-sm text-foreground/50 max-w-lg leading-relaxed mb-3">{post.description}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {post.tags.map(t => (
+                            <span key={t} className="text-[10px] uppercase tracking-widest text-foreground/40 border border-foreground/15 px-3 py-1 rounded-md">{t}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <a
+                        href={post.href}
+                        className="border border-foreground/20 px-5 py-2.5 text-xs font-semibold tracking-widest uppercase hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 flex items-center gap-2 flex-shrink-0 rounded-lg"
+                      >
+                        <BookOpen className="h-3.5 w-3.5" />
+                        Read Post
+                      </a>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section id="contact" className="min-h-screen flex items-center px-4 sm:px-10 lg:px-20 py-32">
+        <div className="max-w-7xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40 mb-6">Contact</p>
+            <div className="border-t border-foreground/15 pt-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-end">
+              <div>
+                <h2 className="font-black tracking-tighter leading-[0.9] uppercase mb-8"
+                  style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)" }}>
+                  Let's Work<br />Together
+                </h2>
+                <p className="text-base text-foreground/50 leading-relaxed max-w-md mb-10">
+                  I'm always interested in new opportunities and collaborations.
+                  Feel free to reach out if you'd like to work together.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href="mailto:siddharthab412@gmail.com"
+                    className="border border-foreground text-foreground px-6 py-3 text-sm font-semibold tracking-widest uppercase hover:bg-foreground hover:text-background transition-colors duration-300 flex items-center gap-2 rounded-lg"
+                  >
+                    <Mail className="h-4 w-4" />
+                    Email Me
+                  </a>
+                  <a
+                    href="https://github.com/siddhartha412"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border border-foreground/20 text-foreground px-6 py-3 text-sm font-semibold tracking-widest uppercase hover:border-foreground transition-colors duration-300 flex items-center gap-2 rounded-lg"
+                  >
+                    <Github className="h-4 w-4" />
+                    GitHub
+                  </a>
+                </div>
+              </div>
+              {/* Right — contact info list */}
+              <div className="divide-y divide-foreground/10">
+                {[
+                  { label: "Email", value: "siddharthab412@gmail.com", href: "mailto:siddharthab412@gmail.com" },
+                  { label: "GitHub", value: "github.com/siddhartha412", href: "https://github.com/siddhartha412" },
+                  { label: "Instagram", value: "@siddhartha412_", href: "https://www.instagram.com/siddhartha412_/" },
+                  { label: "Discord", value: "siddhartha412", href: "https://discord.com/users/1261577588669939755" },
+                ].map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex justify-between items-center py-5 px-4 group hover:bg-foreground/[0.02] transition-colors rounded-xl -mx-2"
+                  >
+                    <span className="text-xs uppercase tracking-widest text-foreground/40">{item.label}</span>
+                    <span className="text-sm font-medium group-hover:text-foreground/60 transition-colors flex items-center gap-2">
+                      {item.value}
+                      <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <footer className="py-12 px-4 sm:px-10 lg:px-20 border-t border-foreground/10 glass rounded-t-3xl">
+        <div className="max-w-7xl mx-auto">
           <ScrollReveal>
-            <div className="flex flex-col items-center space-y-6 sm:space-y-8">
-              <div className="flex flex-col items-center space-y-4">
-                <a
-                  href="https://discord.com/users/1261577588669939755"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:scale-105 transition-transform duration-300"
-                >
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+              <div>
+                <p className="font-bold text-lg tracking-tight">siddhartha412</p>
+                <p className="text-xs text-foreground/40 tracking-widest uppercase mt-1">penguin but noob stack dev who loves minimal</p>
+              </div>
+              <div className="flex items-center gap-6">
+                <a href="https://discord.com/users/1261577588669939755" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform duration-300">
                   <DiscordStatus />
                 </a>
               </div>
-
-              <div className="w-full max-w-xs h-px bg-border/50" />
-
-              <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
-                <a
-                  href="https://github.com/siddhartha412"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground hover:scale-110 transition-all duration-300 flex items-center space-x-1 group"
-                >
-                  <Github className="h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform duration-300" />
-                  <span>GitHub</span>
-                </a>
-                <a
-                  href="https://discord.com/users/1261577588669939755"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground hover:scale-110 transition-all duration-300 flex items-center space-x-1 group"
-                >
-                  <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform duration-300" />
-                  <span>Discord</span>
-                </a>
-                <a
-                  href="https://www.instagram.com/the.minimaluser/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground hover:scale-110 transition-all duration-300 flex items-center space-x-1 group"
-                >
-                  <Instagram className="h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform duration-300" />
-                  <span>Instagram</span>
-                </a>
-                <a
-                  href="mailto:siddharthab412@gmail.com"
-                  className="hover:text-foreground hover:scale-110 transition-all duration-300 flex items-center space-x-1 group"
-                >
-                  <Mail className="h-4 w-4 sm:h-5 sm:w-5 group-hover:rotate-12 transition-transform duration-300" />
-                  <span>Email</span>
-                </a>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-foreground/40">
+                {[
+                  { label: "GitHub", href: "https://github.com/siddhartha412", icon: <Github className="h-4 w-4" /> },
+                  { label: "Discord", href: "https://discord.com/users/1261577588669939755", icon: <MessageCircle className="h-4 w-4" /> },
+                  { label: "Instagram", href: "https://www.instagram.com/siddhartha412_/", icon: <Instagram className="h-4 w-4" /> },
+                  { label: "Email", href: "mailto:siddharthab412@gmail.com", icon: <Mail className="h-4 w-4" /> },
+                ].map(link => (
+                  <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
+                    className="hover:text-foreground transition-colors flex items-center gap-1.5 uppercase tracking-widest">
+                    {link.icon}{link.label}
+                  </a>
+                ))}
               </div>
-
-              <p className="text-xs sm:text-sm text-muted-foreground text-center">
-                © 2024 siddhartha412. All rights reserved.
-              </p>
+            </div>
+            <div className="border-t border-foreground/10 mt-8 pt-6">
+              <p className="text-xs text-foreground/30 tracking-widest uppercase">© 2024 siddhartha412. All rights reserved.</p>
             </div>
           </ScrollReveal>
         </div>

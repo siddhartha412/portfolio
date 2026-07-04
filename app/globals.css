@@ -28,6 +28,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 12px);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -63,7 +64,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --sidebar: #fafafa;
   --sidebar-foreground: #0a0a0a;
   --sidebar-primary: #171717;
@@ -113,6 +114,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground font-sans leading-relaxed;
     /* Enhanced smooth scrolling and performance */
@@ -149,10 +151,12 @@
 
 /* Enhanced custom animations with smoother easing */
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -163,6 +167,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -174,6 +179,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -185,6 +191,7 @@
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -196,6 +203,7 @@
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -203,10 +211,12 @@
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
@@ -216,6 +226,7 @@
   0% {
     background-position: -200px 0;
   }
+
   100% {
     background-position: calc(200px + 100%) 0;
   }
@@ -283,6 +294,71 @@
   display: none;
 }
 
+/* Glass morphism utilities */
+.glass {
+  background: color-mix(in srgb, var(--background) 70%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.dark .glass {
+  background: color-mix(in srgb, var(--background) 50%, transparent);
+  border-color: color-mix(in srgb, var(--border) 30%, transparent);
+}
+
+.glass-card {
+  background: color-mix(in srgb, var(--card) 50%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+}
+
+.dark .glass-card {
+  background: color-mix(in srgb, var(--card) 30%, transparent);
+}
+
+.glass-strong {
+  background: color-mix(in srgb, var(--background) 85%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+/* Improved typography */
+.tracking-wider-improved {
+  letter-spacing: 0.05em;
+}
+
+.tracking-widest-improved {
+  letter-spacing: 0.15em;
+}
+
+.leading-snug-improved {
+  line-height: 1.4;
+}
+
+/* Enhanced section dividers */
+.section-divider {
+  @apply border-t border-foreground/15;
+}
+
+/* Smooth section padding for glass sections */
+.glass-section {
+  @apply relative overflow-hidden;
+}
+
+.glass-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--card) 20%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
 /* Performance optimizations for smooth animations */
 .will-change-transform {
   will-change: transform;
@@ -307,8 +383,16 @@
   transform: translateY(-2px);
 }
 
+/* Disable transitions during theme toggle to prevent lag */
+.no-transitions,
+.no-transitions * {
+  transition-property: none !important;
+  animation-duration: 0.01ms !important;
+}
+
 /* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
